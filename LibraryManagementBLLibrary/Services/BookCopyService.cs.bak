@@ -1,0 +1,197 @@
+using LibraryManagementBLLibrary.Interfaces;
+using LibraryManagementModelLibrary.Models;
+using LibraryManagementDALLibrary.Repositories;
+using LibraryManagementModelLibrary.Enums;
+using LibraryManagementModelLibrary.Exceptions;
+
+namespace LibraryManagementBLLibrary.Services
+{
+    public class BookCopyService : IBookCopyService
+    {   
+
+        private readonly BookCopyRepository _bookCopyRepository;
+        private readonly BookRepository _bookRepository;
+        
+
+        public BookCopyService()
+        {
+            _bookCopyRepository = new BookCopyRepository();
+            _bookRepository = new BookRepository();
+        }
+
+        public Bookcopy? AddBookCopy(Bookcopy bookCopy)
+        {
+            try
+            {
+                if (bookCopy == null)
+                {
+                    throw new LibraryValidationException("Book copy details are required.");
+                }
+
+                if (string.IsNullOrWhiteSpace(bookCopy.Barcodeno) || string.IsNullOrWhiteSpace(bookCopy.Isbn))
+                {
+                    throw new LibraryValidationException("Barcode and ISBN are required.");
+                }
+
+                var bookExists = _bookRepository.GetByIsbn(bookCopy.Isbn) != null;
+                if (!bookExists)
+                {
+                    throw new EntityNotFoundException("Book", bookCopy.Isbn);
+                }
+
+                return _bookCopyRepository.Create(bookCopy);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("AddBookCopy", ex);
+            }
+        }
+
+        public List<Bookcopy> GetAvailableCopiesByIsbn(string isbn)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(isbn))
+                {
+                    throw new LibraryValidationException("ISBN is required.");
+                }
+
+                return _bookCopyRepository.GetAvailableCopiesByIsbn(isbn);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("GetAvailableCopiesByIsbn", ex);
+            }
+        }
+
+        public List<Bookcopy> GetAvailableCopies()
+        {
+            try
+            {
+                return _bookCopyRepository.GetAvailableCopies();
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("GetAvailableCopies", ex);
+            }
+        }
+
+        public List<Bookcopy> GetCopiesByIsbn(string isbn)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(isbn))
+                {
+                    throw new LibraryValidationException("ISBN is required.");
+                }
+
+                return _bookCopyRepository.GetCopiesByIsbn(isbn);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("GetCopiesByIsbn", ex);
+            }
+        }
+
+        public bool MarkCopyAsAvailable(string barcodeNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(barcodeNo))
+                {
+                    throw new LibraryValidationException("Barcode is required.");
+                }
+
+                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Available);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("MarkCopyAsAvailable", ex);
+            }
+        }
+
+        public bool MarkCopyAsBorrowed(string barcodeNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(barcodeNo))
+                {
+                    throw new LibraryValidationException("Barcode is required.");
+                }
+
+                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Borrowed);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("MarkCopyAsBorrowed", ex);
+            }
+        }
+
+        public bool MarkCopyAsDamaged(string barcodeNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(barcodeNo))
+                {
+                    throw new LibraryValidationException("Barcode is required.");
+                }
+
+                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Damaged);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("MarkCopyAsDamaged", ex);
+            }
+        }
+
+        public bool MarkCopyAsUnavailable(string barcodeNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(barcodeNo))
+                {
+                    throw new LibraryValidationException("Barcode is required.");
+                }
+
+                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Unavailable);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("MarkCopyAsUnavailable", ex);
+            }
+        }
+
+    }
+}
