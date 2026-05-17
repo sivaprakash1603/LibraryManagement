@@ -1,0 +1,613 @@
+sivaprakashs@G7XMKXR04M-sivaprakashs LibraryManagement %  cd /Users/sivaprakashs/Documents/LibraryManagement/LibraryManagementFEApplication && dotnet run 2>&1
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 2
+siva (ID: 3, Phone: 9787899545, Email: siva@gmail.com, Status: Active, Membership Type ID: 2)
+John Smith (ID: 2, Phone: 9876543210, Email: john@example.com, Status: Active, Membership Type ID: 2)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 1
+
+Available Membership Types: 1. Basic  2. Student  3. Premium
+Select membership type: 1
+Enter member name: Alice Johnson
+Enter phone: 9123456789
+Enter email: alice@example.com
+Added: Alice Johnson (ID: 4, Phone: 9123456789, Email: alice@example.com, Status: Active, Membership Type ID: 1)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 3
+Enter phone: 9123456789
+Alice Johnson (ID: 4, Phone: 9123456789, Email: alice@example.com, Status: Active, Membership Type ID: 1)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 4
+Enter email: john@example.com
+John Smith (ID: 2, Phone: 9876543210, Email: john@example.com, Status: Active, Membership Type ID: 2)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 5
+Enter member id: 4
+1. Active  2. Inactive  3. Deactivated
+Select status: 2
+Membership status updated.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 3
+samplebook1 by author1 (ISBN: 1234567890)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 4
+Enter title: 1984
+1984 by George Orwell (ISBN: 9780451524935)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 5
+Enter author: George Orwell
+1984 by George Orwell (ISBN: 9780451524935)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 6
+Enter category id: 1
+1984 by George Orwell (ISBN: 9780451524935)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 1
+Enter category name (or select existing): Mystery
+Enter ISBN: 9780061122415
+Enter title: To Kill a Mockingbird
+Enter author: Harper Lee
+Enter edition (optional): 
+Enter price (₹): 499.50
+Added: To Kill a Mockingbird by Harper Lee (ISBN: 9780061122415)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 2
+Enter barcode: 54321
+Enter ISBN: 9780061122415
+Added: Barcode: 54321, ISBN: 9780061122415, Status: Available
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 3
+
+Enter member id: 2
+Enter barcode: 54321
+Borrowing created successfully. Borrowing ID: 2
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 4
+
+Enter barcode: 54321
+Book returned successfully.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 5
+
+Fine Management
+1. View Pending Fines Of Member
+2. View Total Unpaid Fine Of Member
+3. Pay Fine
+4. View Fine History Of Member
+Select an option: 1
+Enter member id: 2
+No pending fines.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 5
+
+Fine Management
+1. View Pending Fines Of Member
+2. View Total Unpaid Fine Of Member
+3. Pay Fine
+4. View Fine History Of Member
+Select an option: 2
+Enter member id: 2
+Total unpaid fine: ₹0.00
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 5
+
+Fine Management
+1. View Pending Fines Of Member
+2. View Total Unpaid Fine Of Member
+3. Pay Fine
+4. View Fine History Of Member
+Select an option: 4
+Enter member id: 2
+Operation failed: Service operation failed: GetFineHistoryByMemberId
+Error Code: SERVICE_OPERATION_FAILED
+Details: Cannot access a disposed object.
+Object name: 'NpgsqlConnection'.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 1
+No active borrowings.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 2
+No overdue books.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 3
+No members with pending fines.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 4
+Enter top count: 5
+samplebook1 by author1 (ISBN: 1234567890)
+To Kill a Mockingbird by Harper Lee (ISBN: 9780061122415)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 5
+Enter category id: 1
+No available books in this category.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 5
+Enter category id: 2
+Operation failed: Service operation failed: GetAvailableBooksByCategory
+Error Code: SERVICE_OPERATION_FAILED
+Details: Error getting available books by category 2: Cannot access a disposed object.
+Object name: 'NpgsqlConnection'.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 6
+
+Reports
+1. Books Currently Borrowed
+2. Overdue Books
+3. Members With Pending Fines
+4. Most Borrowed Books
+5. Available Books By Category
+6. Member Borrowing History
+Select an option: 6
+Enter member id: 2
+Borrowing ID: 2, Member ID: 2, Barcode: 54321, Status: Returned, Borrowed: 5/16/2026, Due: 5/26/2026, Returned: 5/16/2026
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 6
+Enter member id: 1
+Operation failed: Service operation failed: UpdateMembershipStatus
+Error Code: SERVICE_OPERATION_FAILED
+Details: No member found with ID: 1
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 2
+Alice Johnson (ID: 4, Phone: 9123456789, Email: alice@example.com, Status: Inactive, Membership Type ID: 1)
+siva (ID: 3, Phone: 9787899545, Email: siva@gmail.com, Status: Active, Membership Type ID: 2)
+John Smith (ID: 2, Phone: 9876543210, Email: john@example.com, Status: Active, Membership Type ID: 2)
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 1
+
+Member Management
+1. Add Member
+2. View All Members
+3. Search Member By Phone
+4. Search Member By Email
+5. Update Membership Status
+6. Deactivate Member
+Select an option: 6
+Enter member id: 3
+Member deactivated.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 7
+Enter barcode: 12345
+Copy marked as damaged.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 2
+
+Book Management
+1. Add Book
+2. Add Book Copy
+3. View Available Books
+4. Search Book By Title
+5. Search Books By Author
+6. Search Books By Category
+7. Mark Copy As Damaged
+8. Mark Copy As Unavailable
+Select an option: 8
+Enter barcode: 54321
+Copy marked as unavailable.
+
+Library Management System
+1. Member Management
+2. Book Management
+3. Borrow Book
+4. Return Book
+5. Fine Management
+6. Reports
+7. Exit
+Select an option: 7
