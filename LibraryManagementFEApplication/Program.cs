@@ -33,9 +33,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine("Welcome to the Library Management System");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading("Welcome to the Library Management System");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. Admin Login");
             Console.WriteLine("2. Member Login / Sign Up");
             Console.WriteLine("3. Exit");
@@ -53,28 +53,28 @@ public class Program
                         HandleMemberActions();
                         break;
                     case 3:
-                        Console.WriteLine("Exiting application.");
+                        PrintSuccess("Exiting application.");
                         return;
                     default:
-                        Console.WriteLine("Invalid option.");
+                        PrintError("Invalid option.");
                         break;
                 }
             }
             catch (LibraryManagementException ex)
             {
-                Console.WriteLine($"Operation failed: {ex.Message}");
+                PrintError($"Operation failed: {ex.Message}");
                 if (!string.IsNullOrWhiteSpace(ex.ErrorCode))
                 {
-                    Console.WriteLine($"Error Code: {ex.ErrorCode}");
+                    PrintError($"Error Code: {ex.ErrorCode}");
                 }
                 if (ex.InnerException != null)
                 {
-                    Console.WriteLine($"Details: {ex.InnerException.Message}");
+                    PrintError($"Details: {ex.InnerException.Message}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Operation failed: {ex.Message}");
+                PrintError($"Operation failed: {ex.Message}");
             }
         }
     }
@@ -84,9 +84,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine("Admin Actions");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading("Admin Actions");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. Member Management");
             Console.WriteLine("2. Book Management");
             Console.WriteLine("3. Fine Management");
@@ -116,7 +116,7 @@ public class Program
                 case 6:
                     return;
                 default:
-                    Console.WriteLine("Invalid option.");
+                    PrintError("Invalid option.");
                     break;
             }
         }
@@ -127,9 +127,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine("Member Actions");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading("Member Actions");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. Login");
             Console.WriteLine("2. Sign Up");
             Console.WriteLine("3. Back to Main Menu");
@@ -147,7 +147,7 @@ public class Program
                 case 3:
                     return;
                 default:
-                    Console.WriteLine("Invalid option.");
+                    PrintError("Invalid option.");
                     break;
             }
         }
@@ -158,10 +158,10 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine($"Member Dashboard (Member ID: {_currentMemberId})");
-            Console.WriteLine($"Welcome to the Library Management System, {_memberService.GetMemberById(_currentMemberId.Value)?.Name}!");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading($"Member Dashboard (Member ID: {_currentMemberId})");
+            PrintHeading($"Welcome to the Library Management System, {_memberService.GetMemberById(_currentMemberId.Value)?.Name}!");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. Search Book By Title");
             Console.WriteLine("2. Search Books By Author");
             Console.WriteLine("3. Search Books By Category");
@@ -174,38 +174,53 @@ public class Program
 
             var option = ReadInt("Please select an option: ");
 
-            switch (option)
+            try
             {
-                case 1:
-                    HandleSearchBookByTitle();
-                    break;
-                case 2:
-                    HandleSearchBooksByAuthor();
-                    break;
-                case 3:
-                    HandleSearchBooksByCategory();
-                    break;
-                case 4:
-                    HandleViewAvailableBooks();
-                    break;
-                case 5:
-                    HandleMemberBorrowingHistory();
-                    break;
-                case 6:
-                    HandleBorrowBook();
-                    break;
-                case 7:
-                    HandleReturnBook();
-                    break;
-                case 8:
-                    HandleMemberFineManagement();
-                    break;
-                case 10:
-                    _currentMemberId = null;
-                    return;
-                default:
-                    Console.WriteLine("Invalid option.");
-                    break;
+                switch (option)
+                {
+                    case 1:
+                        HandleSearchBookByTitle();
+                        break;
+                    case 2:
+                        HandleSearchBooksByAuthor();
+                        break;
+                    case 3:
+                        HandleSearchBooksByCategory();
+                        break;
+                    case 4:
+                        HandleViewAvailableBooks();
+                        break;
+                    case 5:
+                        HandleMemberBorrowingHistory();
+                        break;
+                    case 6:
+                        HandleBorrowBook();
+                        break;
+                    case 7:
+                        HandleReturnBook();
+                        break;
+                    case 8:
+                        HandleMemberFineManagement();
+                        break;
+                    case 10:
+                        _currentMemberId = null;
+                        return;
+                    default:
+                        PrintError("Invalid option.");
+                        break;
+                }
+            }
+            catch (LibraryManagementException ex)
+            {
+                PrintError($"Operation failed: {ex.Message}");
+                if (!string.IsNullOrWhiteSpace(ex.ErrorCode))
+                {
+                    PrintError($"Error Code: {ex.ErrorCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                PrintError($"Operation failed: {ex.Message}");
             }
         }
     }
@@ -231,7 +246,7 @@ public class Program
         var member = _memberService.GetMemberById(memberId);
         if (member == null)
         {
-            Console.WriteLine("Member not found.");
+            PrintError("Member not found.");
             return;
         }
 
@@ -270,9 +285,9 @@ public class Program
     private void HandleMemberManagement()
     {
         Console.WriteLine();
-        Console.WriteLine("===================================================================");
-        Console.WriteLine("Member Management");
-        Console.WriteLine("===================================================================");
+        PrintHeading("===================================================================");
+        PrintHeading("Member Management");
+        PrintHeading("===================================================================");
         Console.WriteLine("1. Add Member");
         Console.WriteLine("2. View All Members");
         Console.WriteLine("3. Search Member By Phone");
@@ -346,9 +361,9 @@ public class Program
     private void HandleBookManagement()
     {
         Console.WriteLine();
-        Console.WriteLine("===================================================================");
-        Console.WriteLine("Book Management");
-        Console.WriteLine("===================================================================");
+        PrintHeading("===================================================================");
+        PrintHeading("Book Management");
+        PrintHeading("===================================================================");
         Console.WriteLine("1. Add Book");
         Console.WriteLine("2. Add Book Copy");
         Console.WriteLine("3. View All Book Copies");
@@ -411,7 +426,7 @@ public class Program
             case 9:
                 return;
             default:
-                Console.WriteLine("Invalid option.");
+                PrintError("Invalid option.");
                 break;
         }
     }
@@ -610,7 +625,7 @@ public class Program
             case 5:
                 return;
             default:
-                Console.WriteLine("Invalid option.");
+                PrintError("Invalid option.");
                 break;
         }
     }
@@ -620,9 +635,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine("Admin Fine Management");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading("Book Management");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. View Pending Fines Of Member");
             Console.WriteLine("2. View Total Unpaid Fine Of Member");
             Console.WriteLine("3. View Fine History Of Member");
@@ -644,7 +659,7 @@ public class Program
                 case 4:
                     return;
                 default:
-                    Console.WriteLine("Invalid option.");
+                    PrintError("Invalid option.");
                     break;
             }
         }
@@ -692,9 +707,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("===================================================================");
-            Console.WriteLine("Borrowing History Management");
-            Console.WriteLine("===================================================================");
+            PrintHeading("===================================================================");
+            PrintHeading("Borrowing History Management");
+            PrintHeading("===================================================================");
             Console.WriteLine("1. View Borrowing History By Member");
             Console.WriteLine("2. View All Active Borrowings");
             Console.WriteLine("3. Back to Admin Menu");
@@ -712,7 +727,7 @@ public class Program
                 case 3:
                     return;
                 default:
-                    Console.WriteLine("Invalid option.");
+                    PrintError("Invalid option.");
                     break;
             }
         }
@@ -753,9 +768,9 @@ public class Program
     private void HandleReports()
     {
         Console.WriteLine();
-        Console.WriteLine("===================================================================");
-        Console.WriteLine("Reports");
-        Console.WriteLine("===================================================================");
+        PrintHeading("===================================================================");
+        PrintHeading("Reports");
+        PrintHeading("===================================================================");
         Console.WriteLine("1. Books Currently Borrowed");
         Console.WriteLine("2. Overdue Books");
         Console.WriteLine("3. Members With Pending Fines");
@@ -789,7 +804,7 @@ public class Program
             case 7:
                 return;
             default:
-                Console.WriteLine("Invalid option.");
+                PrintError("Invalid option.");
                 break;
         }
     }
@@ -862,6 +877,27 @@ public class Program
     private int GetOrCreateCategory(string categoryName)
     {
         return _categoryService.GetOrCreateCategoryByName(categoryName);
+    }
+
+    private void PrintHeading(string text)
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine(text);
+        Console.ResetColor();
+    }
+
+    private void PrintSuccess(string text)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(text);
+        Console.ResetColor();
+    }
+
+    private void PrintError(string text)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(text);
+        Console.ResetColor();
     }
 
     public static void Main(string[] args)

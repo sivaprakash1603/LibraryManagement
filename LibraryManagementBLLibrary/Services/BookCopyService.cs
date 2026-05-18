@@ -166,7 +166,8 @@ namespace LibraryManagementBLLibrary.Services
                     throw new LibraryValidationException("Barcode is required.");
                 }
 
-                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Unavailable);
+                var bookCopy = GetBookCopyAndMaybeChargeFine(barcodeNo, FineType.Other, 0.20m);
+                return _bookCopyRepository.UpdateStatus(bookCopy.Barcodeno, BookcopyStatus.Unavailable);
             }
             catch (LibraryManagementException)
             {
@@ -200,6 +201,16 @@ namespace LibraryManagementBLLibrary.Services
                 };
 
                 _fineRepository.Create(fine);
+                // Auto-close the active borrowing when admin marks the copy as damaged/lost/unavailable
+                // This ensures the borrowing is no longer active and the fine remains linked to that borrowing.
+                try
+                {
+                    _borrowingRepository.ReturnBookUsingProcedure(activeBorrowing.Barcodeno, DateOnly.FromDateTime(DateTime.Today));
+                }
+                catch
+                {
+                    // If return procedure fails, we still created the fine. Bubble up as a service exception elsewhere.
+                }
             }
 
             return bookCopy;
