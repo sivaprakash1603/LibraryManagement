@@ -13,6 +13,7 @@ public class Program
     private readonly IMemberService _memberService;
     private readonly IFineService _fineService;
     private readonly IBookCategoryService _categoryService;
+    private int? _currentMemberId;
 
     public Program()
     {
@@ -31,13 +32,9 @@ public class Program
         {
             Console.WriteLine();
             Console.WriteLine("Library Management System");
-            Console.WriteLine("1. Member Management");
-            Console.WriteLine("2. Book Management");
-            Console.WriteLine("3. Borrow Book");
-            Console.WriteLine("4. Return Book");
-            Console.WriteLine("5. Fine Management");
-            Console.WriteLine("6. Reports");
-            Console.WriteLine("7. Exit");
+            Console.WriteLine("1. Admin Actions");
+            Console.WriteLine("2. Member Actions");
+            Console.WriteLine("3. Exit");
 
             var option = ReadInt("Select an option: ");
 
@@ -46,24 +43,12 @@ public class Program
                 switch (option)
                 {
                     case 1:
-                        HandleMemberManagement();
+                        HandleAdminActions();
                         break;
                     case 2:
-                        HandleBookManagement();
+                        HandleMemberActions();
                         break;
                     case 3:
-                        HandleBorrowBook();
-                        break;
-                    case 4:
-                        HandleReturnBook();
-                        break;
-                    case 5:
-                        HandleFineManagement();
-                        break;
-                    case 6:
-                        HandleReports();
-                        break;
-                    case 7:
                         Console.WriteLine("Exiting application.");
                         return;
                     default:
@@ -90,6 +75,164 @@ public class Program
         }
     }
 
+    private void HandleAdminActions()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Admin Actions");
+            Console.WriteLine("1. Member Management");
+            Console.WriteLine("2. Book Management");
+            Console.WriteLine("3. Fine Management");
+            Console.WriteLine("4. Reports");
+            Console.WriteLine("5. Back to Main Menu");
+
+            var option = ReadInt("Select an option: ");
+
+            switch (option)
+            {
+                case 1:
+                    HandleMemberManagement();
+                    break;
+                case 2:
+                    HandleBookManagement();
+                    break;
+                case 3:
+                    HandleAdminFineManagement();
+                    break;
+                case 4:
+                    HandleReports();
+                    break;
+                case 5:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void HandleMemberActions()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Member Actions");
+            Console.WriteLine("1. Login");
+            Console.WriteLine("2. Sign Up");
+            Console.WriteLine("3. Back to Main Menu");
+
+            var option = ReadInt("Select an option: ");
+
+            switch (option)
+            {
+                case 1:
+                    HandleMemberLogin();
+                    break;
+                case 2:
+                    HandleMemberSignup();
+                    break;
+                case 3:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void HandleMemberDashboard()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Member Dashboard (Member ID: {_currentMemberId})");
+            Console.WriteLine("1. Search Book By Title");
+            Console.WriteLine("2. Search Books By Author");
+            Console.WriteLine("3. Search Books By Category");
+            Console.WriteLine("4. View Available Books");
+            Console.WriteLine("5. Borrow Book");
+            Console.WriteLine("6. Return Book");
+            Console.WriteLine("7. Fine Management");
+            Console.WriteLine("8. Logout");
+
+            var option = ReadInt("Select an option: ");
+
+            switch (option)
+            {
+                case 1:
+                    HandleSearchBookByTitle();
+                    break;
+                case 2:
+                    HandleSearchBooksByAuthor();
+                    break;
+                case 3:
+                    HandleSearchBooksByCategory();
+                    break;
+                case 4:
+                    HandleViewAvailableBooks();
+                    break;
+                case 5:
+                    HandleBorrowBook();
+                    break;
+                case 6:
+                    HandleReturnBook();
+                    break;
+                case 7:
+                    HandleMemberFineManagement();
+                    break;
+                case 8:
+                    _currentMemberId = null;
+                    return;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void HandleMemberLogin()
+    {
+        var memberId = ReadInt("Enter member id: ");
+        var member = _memberService.GetMemberById(memberId);
+        if (member == null)
+        {
+            Console.WriteLine("Member not found.");
+            return;
+        }
+
+        _currentMemberId = member.Id;
+        Console.WriteLine($"Welcome back, {member.Name}.");
+        HandleMemberDashboard();
+    }
+
+    private void HandleMemberSignup()
+    {
+        Console.WriteLine("\nAvailable Membership Types: 1. Basic  2. Student  3. Premium");
+        var membershipTypeOption = ReadInt("Select membership type: ");
+        var membershipTypeId = membershipTypeOption switch
+        {
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            _ => throw new InvalidOperationException("Invalid membership type option.")
+        };
+
+        var newMember = new Member
+        {
+            Name = ReadRequired("Enter member name: "),
+            Phone = ReadRequired("Enter phone: "),
+            Email = ReadRequired("Enter email: "),
+            Membershiptypeid = membershipTypeId,
+            Accountstatus = AccountStatus.Active
+        };
+
+        var added = _memberService.AddMember(newMember);
+        _currentMemberId = added.Id;
+        Console.WriteLine($"Added: {added}");
+        HandleMemberDashboard();
+    }
+
     private void HandleMemberManagement()
     {
         Console.WriteLine();
@@ -100,6 +243,7 @@ public class Program
         Console.WriteLine("4. Search Member By Email");
         Console.WriteLine("5. Update Membership Status");
         Console.WriteLine("6. Deactivate Member");
+        Console.WriteLine("7. Back to Main Menu");
 
         var option = ReadInt("Select an option: ");
 
@@ -155,6 +299,8 @@ public class Program
                 _memberService.DeactivateMember(ReadInt("Enter member id: "));
                 Console.WriteLine("Member deactivated.");
                 break;
+            case 7:
+                return;
             default:
                 Console.WriteLine("Invalid option.");
                 break;
@@ -167,13 +313,13 @@ public class Program
         Console.WriteLine("Book Management");
         Console.WriteLine("1. Add Book");
         Console.WriteLine("2. Add Book Copy");
-        Console.WriteLine("3. View All Books");
-        Console.WriteLine("4. View Available Books");
-        Console.WriteLine("5. Search Book By Title");
-        Console.WriteLine("6. Search Books By Author");
-        Console.WriteLine("7. Search Books By Category");
-        Console.WriteLine("8. Mark Copy As Damaged");
-        Console.WriteLine("8. Mark Copy As Unavailable");
+        Console.WriteLine("3. View All Book Copies");
+        Console.WriteLine("4. View Available Book Copies");
+        Console.WriteLine("5. Mark Copy As Damaged");
+        Console.WriteLine("6. Mark Copy As Lost");
+        Console.WriteLine("7. Mark Copy As Unavailable");
+        Console.WriteLine("8. Mark Copy As Available");
+        Console.WriteLine("9. Back to Admin Menu");
 
         var option = ReadInt("Select an option: ");
 
@@ -203,41 +349,152 @@ public class Program
                 Console.WriteLine($"Added: {_bookCopyService.AddBookCopy(copy)}");
                 break;
             case 3:
-                PrintList(_bookService.GetAllBooks() ?? new List<Book>(), "No books found.");
+                PrintList(_bookCopyService.GetAllCopies() ?? new List<Bookcopy>(), "No book copies found.");
                 break;
             case 4:
                 PrintList(_bookCopyService.GetAvailableCopies() ?? new List<Bookcopy>(), "No available book copies found.");
                 break;
             case 5:
-                var byTitle = _bookService.GetBookByTitle(ReadRequired("Enter title: "));
-                Console.WriteLine(byTitle?.ToString() ?? "Book not found.");
-                break;
-            case 6:
-                PrintList(_bookService.GetBooksByAuthor(ReadRequired("Enter author: ")) ?? new List<Book>(), "No books found.");
-                break;
-            case 7:
-                PrintList(_bookService.GetBooksByCategory(ReadInt("Enter category id: ")) ?? new List<Book>(), "No books found.");
-                break;
-            case 8:
                 _bookCopyService.MarkCopyAsDamaged(ReadRequired("Enter barcode: "));
                 Console.WriteLine("Copy marked as damaged.");
                 break;
-            case 9:
+            case 6:
+                _bookCopyService.MarkCopyAsLost(ReadRequired("Enter barcode: "));
+                Console.WriteLine("Copy marked as lost.");
+                break;
+            case 7:
                 _bookCopyService.MarkCopyAsUnavailable(ReadRequired("Enter barcode: "));
                 Console.WriteLine("Copy marked as unavailable.");
                 break;
+            case 8:
+                _bookCopyService.MarkCopyAsAvailable(ReadRequired("Enter barcode: "));
+                Console.WriteLine("Copy marked as available.");
+                break;
+            case 9:
+                return;
             default:
                 Console.WriteLine("Invalid option.");
                 break;
         }
     }
 
+    private void HandleSearchBookByTitle()
+    {
+        var allBooks = _bookService.GetAllBooks() ?? new List<Book>();
+        if (allBooks.Count == 0)
+        {
+            Console.WriteLine("No books available.");
+        }
+        else
+        {
+            Console.WriteLine("\nAvailable Titles:");
+            foreach (var book in allBooks)
+            {
+                Console.WriteLine($"  Title: {book.Title}, ISBN: {book.Isbn}");
+            }
+        }
+
+        var bookByTitle = _bookService.GetBookByTitle(ReadRequired("Enter title: "));
+        DisplayBookWithCopies(bookByTitle);
+    }
+
+    private void HandleSearchBooksByAuthor()
+    {
+        var allBooks = _bookService.GetAllBooks() ?? new List<Book>();
+        var authors = allBooks.Select(book => book.Authorname).Distinct().OrderBy(author => author).ToList();
+        if (authors.Count == 0)
+        {
+            Console.WriteLine("No authors available.");
+        }
+        else
+        {
+            Console.WriteLine("\nAvailable Authors:");
+            foreach (var author in authors)
+            {
+                Console.WriteLine($"  {author}");
+            }
+        }
+
+        var booksByAuthor = _bookService.GetBooksByAuthor(ReadRequired("Enter author: ")) ?? new List<Book>();
+        DisplayBooksWithCopies(booksByAuthor, "No books found.");
+    }
+
+    private void HandleSearchBooksByCategory()
+    {
+        var categories = _categoryService.GetAllCategories();
+        if (categories.Count == 0)
+        {
+            Console.WriteLine("No categories found.");
+            return;
+        }
+
+        Console.WriteLine("\nAvailable Categories:");
+        foreach (var category in categories)
+        {
+            Console.WriteLine($"  ID: {category.Id}, Name: {category.Name}");
+        }
+
+        var categoryId = ReadInt("\nEnter category id: ");
+        var booksByCategory = _bookService.GetBooksByCategory(categoryId) ?? new List<Book>();
+        DisplayBooksWithCopies(booksByCategory, "No books found in this category.");
+    }
+
+    private void HandleViewAvailableBooks()
+    {
+        PrintList(_bookCopyService.GetAvailableCopies() ?? new List<Bookcopy>(), "No available book copies found.");
+    }
+
+    private void DisplayBooksWithCopies(IEnumerable<Book> books, string emptyMessage)
+    {
+        var list = books?.ToList() ?? new List<Book>();
+        if (list.Count == 0)
+        {
+            Console.WriteLine(emptyMessage);
+            return;
+        }
+
+        foreach (var book in list)
+        {
+            DisplayBookWithCopies(book);
+        }
+    }
+
+    private void DisplayBookWithCopies(Book? book)
+    {
+        if (book == null)
+        {
+            Console.WriteLine("Book not found.");
+            return;
+        }
+
+        Console.WriteLine(book.ToString());
+        var copies = _bookCopyService.GetCopiesByIsbn(book.Isbn) ?? new List<Bookcopy>();
+        if (copies.Count == 0)
+        {
+            Console.WriteLine("  No copies found.");
+            return;
+        }
+
+        foreach (var copy in copies)
+        {
+            Console.WriteLine($"  Barcode: {copy.Barcodeno}, Status: {copy.Status}");
+        }
+    }
+
     private void HandleBorrowBook()
     {
         Console.WriteLine();
-        var memberId = ReadInt("Enter member id: ");
+        if (_currentMemberId == null)
+        {
+            Console.WriteLine("Please login as a member first.");
+            return;
+        }
+
+        Console.WriteLine("Available book copies:");
+        PrintList(_bookCopyService.GetAvailableCopies() ?? new List<Bookcopy>(), "No available book copies.");
+
         var barcode = ReadRequired("Enter barcode: ");
-        var borrowingId = _borrowingService.BorrowBook(memberId, barcode);
+        var borrowingId = _borrowingService.BorrowBook(_currentMemberId.Value, barcode);
         Console.WriteLine($"Borrowing created successfully. Borrowing ID: {borrowingId}");
     }
 
@@ -249,21 +506,28 @@ public class Program
         Console.WriteLine("Book returned successfully.");
     }
 
-    private void HandleFineManagement()
+    private void HandleMemberFineManagement()
     {
         Console.WriteLine();
+        if (_currentMemberId == null)
+        {
+            Console.WriteLine("Please login as a member first.");
+            return;
+        }
+
         Console.WriteLine("Fine Management");
         Console.WriteLine("1. View Pending Fines Of Member");
         Console.WriteLine("2. View Total Unpaid Fine Of Member");
         Console.WriteLine("3. Pay Fine");
         Console.WriteLine("4. View Fine History Of Member");
+        Console.WriteLine("5. Back to Main Menu");
 
         var option = ReadInt("Select an option: ");
 
         switch (option)
         {
             case 1:
-                var memberFines = _fineService.GetPendingFinesByMemberId(ReadInt("Enter member id: "));
+                var memberFines = _fineService.GetPendingFinesByMemberId(_currentMemberId.Value);
                 if (memberFines.Count == 0)
                 {
                     Console.WriteLine("No pending fines.");
@@ -272,20 +536,26 @@ public class Program
                 {
                     foreach (var fine in memberFines)
                     {
-                        Console.WriteLine($"Fine ID: {fine.Id}, Amount: ₹{fine.Fineamount:F2}, Type: {fine.Finetype}, Paid: {fine.Ispaid}");
+                        var summary = _fineService.GetFinePaymentSummary(fine.Id);
+                        Console.WriteLine($"Fine ID: {fine.Id}, Amount: ₹{summary.fineAmount:F2}, Paid: ₹{summary.totalPaid:F2}, Remaining: ₹{summary.remainingBalance:F2}, Type: {fine.Finetype}, Paid: {summary.isPaid}");
                     }
                 }
                 break;
             case 2:
-                var total = _fineService.GetTotalUnpaidFine(ReadInt("Enter member id: "));
+                var total = _fineService.GetTotalUnpaidFine(_currentMemberId.Value);
                 Console.WriteLine($"Total unpaid fine: ₹{total:F2}");
                 break;
             case 3:
-                _fineService.PayFine(ReadInt("Enter fine id: "), ReadDecimal("Enter paid amount (₹): "));
+                var fineId = ReadInt("Enter fine id: ");
+                var amountPaid = ReadDecimal("Enter paid amount (₹): ");
+                _fineService.PayFine(fineId, amountPaid);
+                var paymentSummary = _fineService.GetFinePaymentSummary(fineId);
                 Console.WriteLine("Fine payment recorded.");
+                Console.WriteLine($"Total paid: ₹{paymentSummary.totalPaid:F2}");
+                Console.WriteLine($"Remaining balance: ₹{paymentSummary.remainingBalance:F2}");
                 break;
             case 4:
-                var fineHistory = _fineService.GetFineHistoryByMemberId(ReadInt("Enter member id: "));
+                var fineHistory = _fineService.GetFineHistoryByMemberId(_currentMemberId.Value);
                 if (fineHistory.Count == 0)
                 {
                     Console.WriteLine("No fine history.");
@@ -298,9 +568,81 @@ public class Program
                     }
                 }
                 break;
+            case 5:
+                return;
             default:
                 Console.WriteLine("Invalid option.");
                 break;
+        }
+    }
+
+    private void HandleAdminFineManagement()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Admin Fine Management");
+            Console.WriteLine("1. View Pending Fines Of Member");
+            Console.WriteLine("2. View Total Unpaid Fine Of Member");
+            Console.WriteLine("3. View Fine History Of Member");
+            Console.WriteLine("4. Back to Admin Menu");
+
+            var option = ReadInt("Select an option: ");
+
+            switch (option)
+            {
+                case 1:
+                    ShowPendingFinesForMember(ReadInt("Enter member id: "));
+                    break;
+                case 2:
+                    ShowTotalUnpaidFineForMember(ReadInt("Enter member id: "));
+                    break;
+                case 3:
+                    ShowFineHistoryForMember(ReadInt("Enter member id: "));
+                    break;
+                case 4:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void ShowPendingFinesForMember(int memberId)
+    {
+        var memberFines = _fineService.GetPendingFinesByMemberId(memberId);
+        if (memberFines.Count == 0)
+        {
+            Console.WriteLine("No pending fines.");
+            return;
+        }
+
+        foreach (var fine in memberFines)
+        {
+            var summary = _fineService.GetFinePaymentSummary(fine.Id);
+            Console.WriteLine($"Fine ID: {fine.Id}, Amount: ₹{summary.fineAmount:F2}, Paid: ₹{summary.totalPaid:F2}, Remaining: ₹{summary.remainingBalance:F2}, Type: {fine.Finetype}, Paid: {summary.isPaid}");
+        }
+    }
+
+    private void ShowTotalUnpaidFineForMember(int memberId)
+    {
+        var total = _fineService.GetTotalUnpaidFine(memberId);
+        Console.WriteLine($"Total unpaid fine: ₹{total:F2}");
+    }
+
+    private void ShowFineHistoryForMember(int memberId)
+    {
+        var fineHistory = _fineService.GetFineHistoryByMemberId(memberId);
+        if (fineHistory.Count == 0)
+        {
+            Console.WriteLine("No fine history.");
+            return;
+        }
+
+        foreach (var payment in fineHistory)
+        {
+            Console.WriteLine($"Payment ID: {payment.Id}, Amount: ₹{payment.Amountpaid:F2}, Date: {payment.Paymentdate}");
         }
     }
 
@@ -314,6 +656,7 @@ public class Program
         Console.WriteLine("4. Most Borrowed Books");
         Console.WriteLine("5. Available Books By Category");
         Console.WriteLine("6. Member Borrowing History");
+        Console.WriteLine("7. Back to Main Menu");
 
         var option = ReadInt("Select an option: ");
 
@@ -337,6 +680,8 @@ public class Program
             case 6:
                 PrintList(_reportService.GetMemberBorrowingHistory(ReadInt("Enter member id: ")), "No borrowing history.");
                 break;
+            case 7:
+                return;
             default:
                 Console.WriteLine("Invalid option.");
                 break;

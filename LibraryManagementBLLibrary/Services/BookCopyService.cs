@@ -11,12 +11,16 @@ namespace LibraryManagementBLLibrary.Services
 
         private readonly BookCopyRepository _bookCopyRepository;
         private readonly BookRepository _bookRepository;
+        private readonly BorrowingRepository _borrowingRepository;
+        private readonly FineRepository _fineRepository;
         
 
         public BookCopyService()
         {
             _bookCopyRepository = new BookCopyRepository();
             _bookRepository = new BookRepository();
+            _borrowingRepository = new BorrowingRepository();
+            _fineRepository = new FineRepository();
         }
 
         public Bookcopy? AddBookCopy(Bookcopy bookCopy)
@@ -48,27 +52,6 @@ namespace LibraryManagementBLLibrary.Services
             catch (Exception ex)
             {
                 throw new ServiceOperationException("AddBookCopy", ex);
-            }
-        }
-
-        public List<Bookcopy> GetAvailableCopiesByIsbn(string isbn)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(isbn))
-                {
-                    throw new LibraryValidationException("ISBN is required.");
-                }
-
-                return _bookCopyRepository.GetAvailableCopiesByIsbn(isbn);
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("GetAvailableCopiesByIsbn", ex);
             }
         }
 
@@ -130,27 +113,6 @@ namespace LibraryManagementBLLibrary.Services
             }
         }
 
-        public bool MarkCopyAsBorrowed(string barcodeNo)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(barcodeNo))
-                {
-                    throw new LibraryValidationException("Barcode is required.");
-                }
-
-                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Borrowed);
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("MarkCopyAsBorrowed", ex);
-            }
-        }
-
         public bool MarkCopyAsDamaged(string barcodeNo)
         {
             try
@@ -160,7 +122,8 @@ namespace LibraryManagementBLLibrary.Services
                     throw new LibraryValidationException("Barcode is required.");
                 }
 
-                return _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Damaged);
+                var bookCopy = GetBookCopyAndMaybeChargeFine(barcodeNo, FineType.Damage, 0.20m);
+                return _bookCopyRepository.UpdateStatus(bookCopy.Barcodeno, BookcopyStatus.Damaged);
             }
             catch (LibraryManagementException)
             {
@@ -169,6 +132,28 @@ namespace LibraryManagementBLLibrary.Services
             catch (Exception ex)
             {
                 throw new ServiceOperationException("MarkCopyAsDamaged", ex);
+            }
+        }
+
+        public bool MarkCopyAsLost(string barcodeNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(barcodeNo))
+                {
+                    throw new LibraryValidationException("Barcode is required.");
+                }
+
+                var bookCopy = GetBookCopyAndMaybeChargeFine(barcodeNo, FineType.Lost, 1.0m);
+                return _bookCopyRepository.UpdateStatus(bookCopy.Barcodeno, BookcopyStatus.Lost);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("MarkCopyAsLost", ex);
             }
         }
 
@@ -193,13 +178,40 @@ namespace LibraryManagementBLLibrary.Services
             }
         }
 
+        private Bookcopy GetBookCopyAndMaybeChargeFine(string barcodeNo, FineType fineType, decimal fineRate)
+        {
+            var bookCopy = _bookCopyRepository.GetByBarcodeNo(barcodeNo)
+                           ?? throw new EntityNotFoundException("BookCopy", barcodeNo);
+
+            var activeBorrowing = _borrowingRepository.GetActiveBorrowingByBarcode(barcodeNo);
+            if (activeBorrowing != null && bookCopy.IsbnNavigation != null)
+            {
+                var bookPrice = bookCopy.IsbnNavigation.Price;
+                var fineAmount = fineType == FineType.Lost
+                    ? bookPrice
+                    : decimal.Round(bookPrice * fineRate, 2, MidpointRounding.AwayFromZero);
+
+                var fine = new Fine
+                {
+                    Borrowingid = activeBorrowing.Id,
+                    Finetype = fineType,
+                    Fineamount = fineAmount,
+                    Ispaid = false
+                };
+
+                _fineRepository.Create(fine);
+            }
+
+            return bookCopy;
+        }
+
 
         public List<Bookcopy> GetAllCopies()
         {
             try
             {
-                var copies = _bookCopyRepository.GetAll();
-                return copies != null ? copies : new List<Bookcopy>();
+                var copies = _bookCopyRepository.GetAllCopiesWithBookDetails();
+                return copies ?? new List<Bookcopy>();
             }
             catch (LibraryManagementException)
             {

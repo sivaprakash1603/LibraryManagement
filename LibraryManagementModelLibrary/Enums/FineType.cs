@@ -3,5 +3,6 @@ public enum FineType
 {
     LateReturn,
     Damage,
+    Lost,
     Other
 }

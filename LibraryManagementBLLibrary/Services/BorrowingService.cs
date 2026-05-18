@@ -101,6 +101,7 @@ namespace LibraryManagementBLLibrary.Services
                     ?? throw new EntityNotFoundException("ActiveBorrowing", barcodeNo);
 
                 _borrowingRepository.ReturnBookUsingProcedure(barcodeNo);
+                _bookCopyRepository.UpdateStatus(barcodeNo, BookcopyStatus.Available);
             }
             catch (LibraryManagementException)
             {

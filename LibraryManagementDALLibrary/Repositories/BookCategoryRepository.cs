@@ -15,10 +15,5 @@ namespace LibraryManagementDALLibrary.Repositories
         {
             return _context.Bookcategories.FirstOrDefault(c => c.Name.ToLower() == name.ToLower());
         }
-
-        public List<Bookcategory> GetAllCategories()
-        {
-            return _context.Bookcategories.ToList();
-        }
     }
 }

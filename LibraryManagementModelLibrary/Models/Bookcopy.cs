@@ -18,6 +18,10 @@ public partial class Bookcopy
 
     public override string ToString()
     {
-        return $"Barcode: {Barcodeno}, ISBN: {Isbn}, Status: {Status}";
+        var bookDetails = IsbnNavigation == null
+            ? $"ISBN: {Isbn}"
+            : $"{IsbnNavigation.Title} by {IsbnNavigation.Authorname} (ISBN: {IsbnNavigation.Isbn})";
+
+        return $"Barcode: {Barcodeno}, {bookDetails}, Status: {Status}";
     }
 }

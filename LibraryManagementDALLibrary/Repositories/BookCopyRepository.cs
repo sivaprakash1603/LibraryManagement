@@ -16,6 +16,7 @@ namespace LibraryManagementDALLibrary.Repositories
         public Book? GetByIsbn(string isbn)
         {
             var bookCopy = _context.Bookcopies.Include(bc => bc.IsbnNavigation)
+                                              .AsNoTracking()
                                               .FirstOrDefault(bc => bc.Isbn == isbn);
             return bookCopy?.IsbnNavigation;
         }
@@ -23,6 +24,7 @@ namespace LibraryManagementDALLibrary.Repositories
         public List<Bookcopy> GetCopiesByIsbn(string isbn)
         {
             var bookCopies = _context.Bookcopies.Where(bc => bc.Isbn == isbn)
+                                                .AsNoTracking()
                                                 .Include(bc => bc.IsbnNavigation)
                                                 .ToList();
             return bookCopies;
@@ -31,6 +33,7 @@ namespace LibraryManagementDALLibrary.Repositories
         public List<Bookcopy> GetAvailableCopiesByIsbn(string isbn)
         {
             var availableBookCopies = _context.Bookcopies.Where(bc => bc.Isbn == isbn && bc.Status == BookcopyStatus.Available)
+                                                        .AsNoTracking()
                                                         .Include(bc => bc.IsbnNavigation)
                                                         .ToList();
             return availableBookCopies;
@@ -39,14 +42,24 @@ namespace LibraryManagementDALLibrary.Repositories
         public List<Bookcopy> GetAvailableCopies()
         {
             var availableBookCopies = _context.Bookcopies.Where(bc => bc.Status == BookcopyStatus.Available)
+                                                        .AsNoTracking()
                                                         .Include(bc => bc.IsbnNavigation)
                                                         .ToList();
             return availableBookCopies;
         }
 
+        public List<Bookcopy> GetAllCopiesWithBookDetails()
+        {
+            return _context.Bookcopies
+                           .AsNoTracking()
+                           .Include(bc => bc.IsbnNavigation)
+                           .ToList();
+        }
+
         public Bookcopy? GetByBarcodeNo(string barcodeNo)
         {
             return _context.Bookcopies
+                           .AsNoTracking()
                            .Include(bc => bc.IsbnNavigation)
                            .FirstOrDefault(bc => bc.Barcodeno == barcodeNo);
         }

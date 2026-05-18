@@ -11,8 +11,6 @@ public interface IMemberService
 	Member? GetMemberById(int memberId);
 	Member? GetMemberByPhone(string phone);
 	Member? GetMemberByEmail(string email);
-	List<Member> SearchMembers(string searchText);
-	Member UpdateMember(Member member);
 	bool UpdateMembershipStatus(int memberId, AccountStatus accountStatus);
 	bool DeactivateMember(int memberId);
 }

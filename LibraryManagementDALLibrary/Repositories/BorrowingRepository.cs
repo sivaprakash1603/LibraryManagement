@@ -17,8 +17,11 @@ namespace LibraryManagementDALLibrary.Repositories
         {
             try
             {
-                // First, execute the borrowing function through raw SQL
-                _context.Database.ExecuteSql($"SELECT create_borrowing({memberId}, '{barcodeno}')");
+                // First, execute the borrowing function through parameterized SQL
+                _context.Database.ExecuteSqlRaw(
+                    "SELECT create_borrowing({0}, {1})",
+                    memberId,
+                    barcodeno);
                 
                 // Then retrieve the borrowing ID that was created
                 var borrowing = _context.Borrowings
@@ -117,40 +120,21 @@ namespace LibraryManagementDALLibrary.Repositories
             {
                 if (returnDate.HasValue)
                 {
-                    _context.Database.ExecuteSql($"CALL return_book('{barcodeno}', '{returnDate:yyyy-MM-dd}')");
+                    _context.Database.ExecuteSqlRaw(
+                        "CALL return_book({0}, {1})",
+                        barcodeno,
+                        returnDate.Value.ToString("yyyy-MM-dd"));
                 }
                 else
                 {
-                    _context.Database.ExecuteSql($"CALL return_book('{barcodeno}')");
+                    _context.Database.ExecuteSqlRaw(
+                        "CALL return_book({0})",
+                        barcodeno);
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("Error returning book: " + ex.Message);
-            }
-        }
-
-        public (int activeBorrows, int returnedBorrows, decimal unpaidFine) GetMemberBorrowingSummary(int memberId)
-        {
-            try
-            {
-                using var connection = _context.Database.GetDbConnection();
-                connection.Open();
-                using var command = connection.CreateCommand();
-                command.CommandText = $"SELECT * FROM get_member_borrowing_summary({memberId})";
-                using var reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    var activeBorrows = (int)reader[0];
-                    var returnedBorrows = (int)reader[1];
-                    var unpaidFine = (decimal)reader[2];
-                    return (activeBorrows, returnedBorrows, unpaidFine);
-                }
-                return (0, 0, 0);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error getting member borrowing summary: " + ex.Message);
             }
         }
     }

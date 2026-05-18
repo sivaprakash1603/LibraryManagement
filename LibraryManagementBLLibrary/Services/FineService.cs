@@ -54,6 +54,27 @@ namespace LibraryManagementBLLibrary.Services
                 throw new ServiceOperationException("GetTotalUnpaidFine", ex);
             }
         }
+
+        public (decimal fineAmount, decimal totalPaid, decimal remainingBalance, bool isPaid) GetFinePaymentSummary(int fineId)
+        {
+            try
+            {
+                if (fineId <= 0)
+                {
+                    throw new LibraryValidationException("Fine id must be greater than zero.");
+                }
+
+                return _fineRepository.GetFinePaymentSummary(fineId);
+            }
+            catch (LibraryManagementException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceOperationException("GetFinePaymentSummary", ex);
+            }
+        }
         public bool AddFine(Fine fine)
         {
             try
@@ -63,7 +84,7 @@ namespace LibraryManagementBLLibrary.Services
                     throw new LibraryValidationException("Fine details are required.");
                 }
 
-                return _fineRepository.AddFine(fine);
+                return _fineRepository.Create(fine) != null;
             }
             catch (LibraryManagementException)
             {
@@ -87,6 +108,12 @@ namespace LibraryManagementBLLibrary.Services
                 if (amountPaid <= 0)
                 {
                     throw new LibraryValidationException("Paid amount must be greater than zero.");
+                }
+
+                var summary = _fineRepository.GetFinePaymentSummary(fineId);
+                if (amountPaid > summary.remainingBalance)
+                {
+                    throw new BusinessRuleViolationException($"Paid amount cannot be greater than the remaining balance of ₹{summary.remainingBalance:F2}.");
                 }
 
                 _fineRepository.RecordFinePayment(fineId, amountPaid);

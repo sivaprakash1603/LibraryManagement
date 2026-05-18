@@ -8,10 +8,11 @@ public interface IBookCopyService
 {
 	Bookcopy? AddBookCopy(Bookcopy bookCopy);
 	List<Bookcopy> GetCopiesByIsbn(string isbn);
-	List<Bookcopy> GetAvailableCopiesByIsbn(string isbn);
 	List<Bookcopy> GetAvailableCopies();
-	bool MarkCopyAsBorrowed(string barcodeNo);
+	List<Bookcopy> GetAllCopies();
 	bool MarkCopyAsAvailable(string barcodeNo);
 	bool MarkCopyAsDamaged(string barcodeNo);
+	bool MarkCopyAsLost(string barcodeNo);
 	bool MarkCopyAsUnavailable(string barcodeNo);
+
 }

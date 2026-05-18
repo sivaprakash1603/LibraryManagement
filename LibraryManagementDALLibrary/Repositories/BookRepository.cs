@@ -24,19 +24,10 @@ namespace LibraryManagementDALLibrary.Repositories
             return _context.Books.FirstOrDefault(b => b.Title == title);
         }
 
-        public Book? GetByAuthor(string author)
-        {
-            return _context.Books.FirstOrDefault(b => b.Authorname == author);
-        }
         public List<Book> GetByCategory(int categoryId)
         {
             return _context.Books.Where(b => b.Categoryid == categoryId).ToList();
 
-        }
-        public List<Book> GetAvailableBooks()
-        {
-            var availableBookCopies = _context.Bookcopies.Include(bc => bc.IsbnNavigation).Where(bc => bc.Status == BookcopyStatus.Available).ToList();
-            return availableBookCopies.Select(bc => bc.IsbnNavigation).Distinct().ToList();
         }
 
         public List<Book> GetBooksByAuthor(string authorName)

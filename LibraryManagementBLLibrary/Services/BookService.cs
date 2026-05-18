@@ -56,27 +56,6 @@ namespace LibraryManagementBLLibrary.Services
             }
         }
 
-        public Book? GetBookByIsbn(string isbn)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(isbn))
-                {
-                    throw new LibraryValidationException("ISBN is required.");
-                }
-
-                return _bookRepository.GetByIsbn(isbn);
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("GetBookByIsbn", ex);
-            }
-        }
-
         public Book? GetBookByTitle(string title)
         {
             try
@@ -137,22 +116,6 @@ namespace LibraryManagementBLLibrary.Services
             catch (Exception ex)
             {
                 throw new ServiceOperationException("GetBooksByCategory", ex);
-            }
-        }
-
-        public List<Book> GetAvailableBooks()
-        {
-            try
-            {
-                return _bookRepository.GetAvailableBooks();
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("GetAvailableBooks", ex);
             }
         }
 

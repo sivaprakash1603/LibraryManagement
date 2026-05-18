@@ -120,54 +120,6 @@ namespace LibraryManagementBLLibrary.Services
             }
         }
 
-        public List<Member> SearchMembers(string searchText)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(searchText))
-                {
-                    throw new LibraryValidationException("Search text is required.");
-                }
-
-                var normalizedText = searchText.Trim().ToLowerInvariant();
-                return _memberRepository.GetAllMembers()
-                    .Where(member =>
-                        member.Name.ToLowerInvariant().Contains(normalizedText) ||
-                        member.Phone.ToLowerInvariant().Contains(normalizedText) ||
-                        member.Email.ToLowerInvariant().Contains(normalizedText))
-                    .ToList();
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("SearchMembers", ex);
-            }
-        }
-
-        public Member UpdateMember(Member member)
-        {
-            try
-            {
-                if (member == null)
-                {
-                    throw new LibraryValidationException("Member details are required.");
-                }
-
-                return _memberRepository.UpdateMember(member);
-            }
-            catch (LibraryManagementException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ServiceOperationException("UpdateMember", ex);
-            }
-        }
-
         public bool UpdateMembershipStatus(int memberId, AccountStatus accountStatus)
         {
             try
