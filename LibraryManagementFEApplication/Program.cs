@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using LibraryManagementBLLibrary.Interfaces;
 using LibraryManagementBLLibrary.Services;
 using LibraryManagementModelLibrary.Enums;
@@ -24,6 +25,7 @@ public class Program
         _memberService = new MemberService();
         _fineService = new FineService();
         _categoryService = new BookCategoryService();
+        _currentMemberId = null;
     }
 
     public void Run()
@@ -31,9 +33,11 @@ public class Program
         while (true)
         {
             Console.WriteLine();
-            Console.WriteLine("Library Management System");
-            Console.WriteLine("1. Admin Actions");
-            Console.WriteLine("2. Member Actions");
+            Console.WriteLine("===================================================================");
+            Console.WriteLine("Welcome to the Library Management System");
+            Console.WriteLine("===================================================================");
+            Console.WriteLine("1. Admin Login");
+            Console.WriteLine("2. Member Login / Sign Up");
             Console.WriteLine("3. Exit");
 
             var option = ReadInt("Select an option: ");
@@ -80,14 +84,17 @@ public class Program
         while (true)
         {
             Console.WriteLine();
+            Console.WriteLine("===================================================================");
             Console.WriteLine("Admin Actions");
+            Console.WriteLine("===================================================================");
             Console.WriteLine("1. Member Management");
             Console.WriteLine("2. Book Management");
             Console.WriteLine("3. Fine Management");
             Console.WriteLine("4. Reports");
-            Console.WriteLine("5. Back to Main Menu");
+            Console.WriteLine("5. Borrowing History");
+            Console.WriteLine("6. Back to Main Menu");
 
-            var option = ReadInt("Select an option: ");
+            var option = ReadInt("Please select an option: ");
 
             switch (option)
             {
@@ -104,6 +111,9 @@ public class Program
                     HandleReports();
                     break;
                 case 5:
+                    HandleAdminBorrowingHistory();
+                    break;
+                case 6:
                     return;
                 default:
                     Console.WriteLine("Invalid option.");
@@ -117,12 +127,14 @@ public class Program
         while (true)
         {
             Console.WriteLine();
+            Console.WriteLine("===================================================================");
             Console.WriteLine("Member Actions");
+            Console.WriteLine("===================================================================");
             Console.WriteLine("1. Login");
             Console.WriteLine("2. Sign Up");
             Console.WriteLine("3. Back to Main Menu");
 
-            var option = ReadInt("Select an option: ");
+            var option = ReadInt("Please select an option: ");
 
             switch (option)
             {
@@ -146,17 +158,21 @@ public class Program
         while (true)
         {
             Console.WriteLine();
+            Console.WriteLine("===================================================================");
             Console.WriteLine($"Member Dashboard (Member ID: {_currentMemberId})");
+            Console.WriteLine($"Welcome to the Library Management System, {_memberService.GetMemberById(_currentMemberId.Value)?.Name}!");
+            Console.WriteLine("===================================================================");
             Console.WriteLine("1. Search Book By Title");
             Console.WriteLine("2. Search Books By Author");
             Console.WriteLine("3. Search Books By Category");
             Console.WriteLine("4. View Available Books");
-            Console.WriteLine("5. Borrow Book");
-            Console.WriteLine("6. Return Book");
-            Console.WriteLine("7. Fine Management");
-            Console.WriteLine("8. Logout");
+            Console.WriteLine("5. View My Borrowing History");
+            Console.WriteLine("6. Borrow Book");
+            Console.WriteLine("7. Return Book");
+            Console.WriteLine("8. Fine Management");
+            Console.WriteLine("10. Logout");
 
-            var option = ReadInt("Select an option: ");
+            var option = ReadInt("Please select an option: ");
 
             switch (option)
             {
@@ -173,21 +189,39 @@ public class Program
                     HandleViewAvailableBooks();
                     break;
                 case 5:
-                    HandleBorrowBook();
+                    HandleMemberBorrowingHistory();
                     break;
                 case 6:
-                    HandleReturnBook();
+                    HandleBorrowBook();
                     break;
                 case 7:
-                    HandleMemberFineManagement();
+                    HandleReturnBook();
                     break;
                 case 8:
+                    HandleMemberFineManagement();
+                    break;
+                case 10:
                     _currentMemberId = null;
                     return;
                 default:
                     Console.WriteLine("Invalid option.");
                     break;
             }
+        }
+    }
+
+    private void HandleMemberBorrowingHistory()
+    {
+        var history = _reportService.GetMemberBorrowingHistory(_currentMemberId.Value);
+        if (history.Count == 0)
+        {
+            Console.WriteLine("No borrowing history found.");
+            return;
+        }
+
+        foreach (var borrowing in history)
+        {
+            Console.WriteLine(borrowing.ToString());
         }
     }
 
@@ -236,7 +270,9 @@ public class Program
     private void HandleMemberManagement()
     {
         Console.WriteLine();
+        Console.WriteLine("===================================================================");
         Console.WriteLine("Member Management");
+        Console.WriteLine("===================================================================");
         Console.WriteLine("1. Add Member");
         Console.WriteLine("2. View All Members");
         Console.WriteLine("3. Search Member By Phone");
@@ -310,7 +346,9 @@ public class Program
     private void HandleBookManagement()
     {
         Console.WriteLine();
+        Console.WriteLine("===================================================================");
         Console.WriteLine("Book Management");
+        Console.WriteLine("===================================================================");
         Console.WriteLine("1. Add Book");
         Console.WriteLine("2. Add Book Copy");
         Console.WriteLine("3. View All Book Copies");
@@ -514,12 +552,13 @@ public class Program
             Console.WriteLine("Please login as a member first.");
             return;
         }
-
+        Console.WriteLine("===================================================================");
         Console.WriteLine("Fine Management");
-        Console.WriteLine("1. View Pending Fines Of Member");
-        Console.WriteLine("2. View Total Unpaid Fine Of Member");
+        Console.WriteLine("===================================================================");
+        Console.WriteLine("1. View Pending Fines");
+        Console.WriteLine("2. View Total Unpaid Fine");
         Console.WriteLine("3. Pay Fine");
-        Console.WriteLine("4. View Fine History Of Member");
+        Console.WriteLine("4. View Fine History");
         Console.WriteLine("5. Back to Main Menu");
 
         var option = ReadInt("Select an option: ");
@@ -581,7 +620,9 @@ public class Program
         while (true)
         {
             Console.WriteLine();
+            Console.WriteLine("===================================================================");
             Console.WriteLine("Admin Fine Management");
+            Console.WriteLine("===================================================================");
             Console.WriteLine("1. View Pending Fines Of Member");
             Console.WriteLine("2. View Total Unpaid Fine Of Member");
             Console.WriteLine("3. View Fine History Of Member");
@@ -646,10 +687,75 @@ public class Program
         }
     }
 
+    private void HandleAdminBorrowingHistory()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("===================================================================");
+            Console.WriteLine("Borrowing History Management");
+            Console.WriteLine("===================================================================");
+            Console.WriteLine("1. View Borrowing History By Member");
+            Console.WriteLine("2. View All Active Borrowings");
+            Console.WriteLine("3. Back to Admin Menu");
+
+            var option = ReadInt("Please select an option: ");
+
+            switch (option)
+            {
+                case 1:
+                    ShowBorrowingHistoryForMember(ReadInt("Enter member id: "));
+                    break;
+                case 2:
+                    ShowAllActiveBorrowings();
+                    break;
+                case 3:
+                    return;
+                default:
+                    Console.WriteLine("Invalid option.");
+                    break;
+            }
+        }
+    }
+
+    private void ShowBorrowingHistoryForMember(int memberId)
+    {
+        var history = _reportService.GetMemberBorrowingHistory(memberId);
+        if (history.Count == 0)
+        {
+            Console.WriteLine("No borrowing history found for this member.");
+            return;
+        }
+
+        Console.WriteLine($"\nBorrowing History for Member ID {memberId}:");
+        foreach (var borrowing in history)
+        {
+            Console.WriteLine(borrowing.ToString());
+        }
+    }
+
+    private void ShowAllActiveBorrowings()
+    {
+        var activeBorrowings = _reportService.GetBooksCurrentlyBorrowed();
+        if (activeBorrowings.Count == 0)
+        {
+            Console.WriteLine("No active borrowings.");
+            return;
+        }
+
+        Console.WriteLine("\nAll Active Borrowings:");
+        foreach (var borrowing in activeBorrowings)
+        {
+            Console.WriteLine(borrowing.ToString());
+        }
+    }
+
     private void HandleReports()
     {
         Console.WriteLine();
+        Console.WriteLine("===================================================================");
         Console.WriteLine("Reports");
+        Console.WriteLine("===================================================================");
         Console.WriteLine("1. Books Currently Borrowed");
         Console.WriteLine("2. Overdue Books");
         Console.WriteLine("3. Members With Pending Fines");
